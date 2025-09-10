@@ -1,4 +1,4 @@
-package com.majid_felegari07.coinswap.ui.theme
+package com.majid_felegari07.coinswap.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
