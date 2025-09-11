@@ -43,7 +43,10 @@ import androidx.compose.ui.unit.sp
 import com.majid_felegari07.coinswap.R
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    state: MainScreenState,
+    onEvent: MainScreenEvent
+) {
     val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "C")
 
     Column(
