@@ -81,13 +81,16 @@ fun MainScreen(
                     ) {
                         CurrencyRow(
                             modifier = Modifier.fillMaxWidth(),
-                            currencyCode = "IR",
-                            currencyName = "Iran Toman",
+                            currencyCode = state.fromCurrencyCode,
+                            currencyName = state.currencyRates[state.fromCurrencyCode]?.name ?: "",
                             onDropdownIconClicked = {}
                         )
                         Text(
-                            text = "25.25",
-                            fontSize = 40.sp
+                            text = state.fromCurrencyValue,
+                            fontSize = 40.sp,
+                            modifier = Modifier.clickable {
+                                onEvent(MainScreenEvent.FromCurrencySelect)
+                            }
                         )
 
                     }
@@ -103,13 +106,16 @@ fun MainScreen(
                         horizontalAlignment = Alignment.End
                     ) {
                         Text(
-                            text = "25.25",
-                            fontSize = 40.sp
+                            text = state.toCurrencyValue,
+                            fontSize = 40.sp,
+                            modifier = Modifier.clickable {
+                                onEvent(MainScreenEvent.ToCurrencySelect)
+                            }
                         )
                         CurrencyRow(
                             modifier = Modifier.fillMaxWidth(),
-                            currencyCode = "IR",
-                            currencyName = "Iran Toman",
+                            currencyCode = state.toCurrencyCode,
+                            currencyName = state.currencyRates[state.toCurrencyCode]?.name ?: "",
                             onDropdownIconClicked = {}
                         )
                     }
@@ -119,7 +125,7 @@ fun MainScreen(
                 modifier = Modifier
                     .padding(start = 40.dp)
                     .clip(CircleShape)
-                    .clickable { }
+                    .clickable { onEvent(MainScreenEvent.SwapIconClicked) }
                     .background(color = MaterialTheme.colorScheme.background)
             ) {
                 Icon(
@@ -142,13 +148,16 @@ fun MainScreen(
                     key = key,
                     backgroundColor = if (key == "C") MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.surfaceVariant,
-                    onClick = {}
+                    onClick = {
+                        onEvent(MainScreenEvent.NumberButtonClicked(key))
+                    }
                 )
             }
         }
 
     }
 }
+
 
 @Composable
 fun CurrencyRow(
