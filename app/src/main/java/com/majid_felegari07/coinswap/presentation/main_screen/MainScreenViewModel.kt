@@ -42,7 +42,14 @@ class MainScreenViewModel @Inject constructor(
             is MainScreenEvent.NumberButtonClicked -> {
                 updateCurrencyValue(value = event.value)
             }
-            is MainScreenEvent.BottomSheetItemClicked -> TODO()
+            is MainScreenEvent.BottomSheetItemClicked -> {
+                if (state.selection == SelectionState.FROM) {
+                    state = state.copy(fromCurrencyCode = event.value)
+                } else if (state.selection == SelectionState.TO) {
+                    state = state.copy(toCurrencyCode = event.value)
+                }
+                updateCurrencyValue("")
+            }
         }
     }
 

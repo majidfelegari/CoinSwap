@@ -27,13 +27,23 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +56,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.majid_felegari07.coinswap.R
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnrememberedMutableInteractionSource")
 @Composable
 fun MainScreen(
@@ -61,6 +73,46 @@ fun MainScreen(
         if (state.error != null) {
             Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
         }
+    }
+
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var shoulBottomSheetShow by remember {
+        mutableStateOf(false)
+    }
+
+    if (shoulBottomSheetShow) {
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { shoulBottomSheetShow = false },
+            dragHandle = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    BottomSheetDefaults.DragHandle()
+                    Text(
+                        text = "Select Currency",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Divider()
+                }
+            },
+            content = {
+                BottomSheetContent(
+                    onItemClicked = { currencyCode ->
+                        onEvent(MainScreenEvent.BottomSheetItemClicked(currencyCode))
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) shoulBottomSheetShow = false
+                        }
+
+                    },
+                    currenciesList = state.currencyRates.values.toList()
+                )
+            }
+        )
     }
 
     Column(
@@ -97,7 +149,10 @@ fun MainScreen(
                             modifier = Modifier.fillMaxWidth(),
                             currencyCode = state.fromCurrencyCode,
                             currencyName = state.currencyRates[state.fromCurrencyCode]?.name ?: "",
-                            onDropdownIconClicked = {}
+                            onDropdownIconClicked = {
+                                shoulBottomSheetShow = true
+                                onEvent(MainScreenEvent.FromCurrencySelect)
+                            }
                         )
                         Text(
                             text = state.fromCurrencyValue,
@@ -129,7 +184,7 @@ fun MainScreen(
                         Text(
                             text = state.toCurrencyValue,
                             fontSize = 40.sp,
-                            modifier = Modifier.clickable (
+                            modifier = Modifier.clickable(
                                 interactionSource = MutableInteractionSource(),
                                 indication = null,
                                 onClick = {
@@ -144,7 +199,10 @@ fun MainScreen(
                             modifier = Modifier.fillMaxWidth(),
                             currencyCode = state.toCurrencyCode,
                             currencyName = state.currencyRates[state.toCurrencyCode]?.name ?: "",
-                            onDropdownIconClicked = {}
+                            onDropdownIconClicked = {
+                                shoulBottomSheetShow = true
+                                onEvent(MainScreenEvent.ToCurrencySelect)
+                            }
                         )
                     }
                 }
