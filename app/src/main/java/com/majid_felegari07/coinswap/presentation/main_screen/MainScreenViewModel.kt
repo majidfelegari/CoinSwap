@@ -73,8 +73,8 @@ class MainScreenViewModel @Inject constructor(
             SelectionState.FROM -> state.fromCurrencyValue
             SelectionState.TO -> state.toCurrencyValue
         }
-        val fromCurrencyRate = state.currencyRates[state.fromCurrencyValue]?.rate ?: 0.0
-        val toCurrencyRate = state.currencyRates[state.toCurrencyValue]?.rate ?: 0.0
+        val fromCurrencyRate = state.currencyRates[state.fromCurrencyCode]?.rate ?: 0.0
+        val toCurrencyRate = state.currencyRates[state.toCurrencyCode]?.rate ?: 0.0
 
         val updatedCurrencyValue = when(value) {
             "C" -> "0.00"
@@ -96,8 +96,8 @@ class MainScreenViewModel @Inject constructor(
                 val toValue = updatedCurrencyValue.toDoubleOrNull() ?: 0.0
                 val fromValue = toValue / toCurrencyRate * fromCurrencyRate
                 state = state.copy(
-                    fromCurrencyValue = updatedCurrencyValue,
-                    toCurrencyValue = numberFormat.format(fromValue)
+                    toCurrencyValue = updatedCurrencyValue,
+                    fromCurrencyValue = numberFormat.format(fromValue)
                 )
             }
         }
