@@ -10,7 +10,7 @@ interface CurrencyApi {
     @GET("v1/latest")
     suspend fun getLatestRates(
         @Query("apikey") apiKey: String = API_KEY
-    ) : CurrencyDto
+    ): CurrencyDto
 
     companion object {
         const val API_KEY = API_KEY_

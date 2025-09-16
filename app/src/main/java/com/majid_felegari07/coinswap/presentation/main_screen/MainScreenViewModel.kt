@@ -59,13 +59,13 @@ class MainScreenViewModel @Inject constructor(
                 .getCurrencyRatesList()
                 .collectLatest { result ->
                     when(result) {
-                        is Resource.Error -> {
+                        is Resource.Success -> {
                             state.copy(
                                 currencyRates = result.data?.associateBy { it.code } ?: emptyMap(),
                                 error = null
                             )
                         }
-                        is Resource.Success -> {
+                        is Resource.Error -> {
                             state.copy(
                                 currencyRates = result.data?.associateBy { it.code } ?: emptyMap(),
                                 error = result.message
