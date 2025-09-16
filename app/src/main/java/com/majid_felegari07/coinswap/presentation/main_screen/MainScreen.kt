@@ -58,8 +58,8 @@ import androidx.compose.ui.unit.sp
 import com.majid_felegari07.coinswap.R
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnrememberedMutableInteractionSource")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     state: MainScreenState,
@@ -77,14 +77,12 @@ fun MainScreen(
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
-    var shoulBottomSheetShow by remember {
-        mutableStateOf(false)
-    }
+    var shouldBottomSheetShow by remember { mutableStateOf(false) }
 
-    if (shoulBottomSheetShow) {
+    if (shouldBottomSheetShow) {
         ModalBottomSheet(
             sheetState = sheetState,
-            onDismissRequest = { shoulBottomSheetShow = false },
+            onDismissRequest = { shouldBottomSheetShow = false },
             dragHandle = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -105,9 +103,8 @@ fun MainScreen(
                     onItemClicked = { currencyCode ->
                         onEvent(MainScreenEvent.BottomSheetItemClicked(currencyCode))
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) shoulBottomSheetShow = false
+                            if (!sheetState.isVisible) shouldBottomSheetShow = false
                         }
-
                     },
                     currenciesList = state.currencyRates.values.toList()
                 )
@@ -149,8 +146,8 @@ fun MainScreen(
                             modifier = Modifier.fillMaxWidth(),
                             currencyCode = state.fromCurrencyCode,
                             currencyName = state.currencyRates[state.fromCurrencyCode]?.name ?: "",
-                            onDropdownIconClicked = {
-                                shoulBottomSheetShow = true
+                            onDropDownIconClicked = {
+                                shouldBottomSheetShow = true
                                 onEvent(MainScreenEvent.FromCurrencySelect)
                             }
                         )
@@ -199,8 +196,8 @@ fun MainScreen(
                             modifier = Modifier.fillMaxWidth(),
                             currencyCode = state.toCurrencyCode,
                             currencyName = state.currencyRates[state.toCurrencyCode]?.name ?: "",
-                            onDropdownIconClicked = {
-                                shoulBottomSheetShow = true
+                            onDropDownIconClicked = {
+                                shouldBottomSheetShow = true
                                 onEvent(MainScreenEvent.ToCurrencySelect)
                             }
                         )
@@ -250,14 +247,14 @@ fun CurrencyRow(
     modifier: Modifier = Modifier,
     currencyCode: String,
     currencyName: String,
-    onDropdownIconClicked: () -> Unit
+    onDropDownIconClicked: () -> Unit
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = currencyCode, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-        IconButton(onClick = onDropdownIconClicked) {
+        IconButton(onClick = onDropDownIconClicked) {
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = "open bottom sheet"

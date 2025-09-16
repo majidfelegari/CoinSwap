@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val repository: CurrencyRepository
-) : ViewModel(){
+): ViewModel(){
 
     var state by mutableStateOf(MainScreenState())
     init {
@@ -58,7 +58,7 @@ class MainScreenViewModel @Inject constructor(
             repository
                 .getCurrencyRatesList()
                 .collectLatest { result ->
-                    when(result) {
+                    state = when(result) {
                         is Resource.Success -> {
                             state.copy(
                                 currencyRates = result.data?.associateBy { it.code } ?: emptyMap(),
